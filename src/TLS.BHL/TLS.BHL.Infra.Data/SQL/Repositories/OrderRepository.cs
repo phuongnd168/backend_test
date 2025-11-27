@@ -26,8 +26,8 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
             {
                 return "Người dùng không tồn tại";
             }
-       
 
+            request.Created_at = DateTime.UtcNow;
             await Context.Orders.AddAsync(request);
             await Context.SaveChangesAsync(cancellationToken);
 

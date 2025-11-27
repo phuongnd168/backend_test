@@ -118,7 +118,7 @@ namespace TLS.BHL.Infra.Data.SQL.Contexts
             {
                 entity.Property(x => x.Id).UseIdentityColumn();
                 entity.Property(x => x.Products).IsRequired();
-                entity.Property(x => x.Created_at).HasDefaultValue(DateTime.UtcNow);
+              
                 entity.Property(x => x.Deleted_by).HasDefaultValue("phuong");
                 entity.Property(x => x.Created_by).HasDefaultValue("phuong");
                 entity.Property(x => x.Updated_by).HasDefaultValue("phuong");

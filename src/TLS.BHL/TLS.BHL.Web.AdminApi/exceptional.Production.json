@@ -1,0 +1,7 @@
+{
+  "Exceptional": {
+    "Store": {
+      "ConnectionString": "#{Conf.Exceptional.Store.ConnectionString}"
+    }
+  }
+}

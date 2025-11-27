@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+	<Version>1.0.0</Version>
+	<AssemblyVersion>1.0.0.0</AssemblyVersion>
+	<FileVersion>1.0.0.0</FileVersion>
+	<Authors>duongdq@gmail.com</Authors>
+	<Company>TLS</Company>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<PackageReference Include="Captcha" Version="4.0.1">
+	  <NoWarn>NU1701</NoWarn>
+	</PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TLS.Core\TLS.Core.csproj" />
+  </ItemGroup>
+
+</Project>

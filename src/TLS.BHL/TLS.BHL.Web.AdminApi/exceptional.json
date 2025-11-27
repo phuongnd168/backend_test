@@ -1,0 +1,42 @@
+{
+  "Exceptional": {
+    // "DataIncludePattern": "MyPrefix.*", // Exception.Data[] keys matching this regex pattern are logged
+    // Log filters are a list of key value pairs. The key describes the property of either the cookie
+    // or the form that should be replaced with the given value. For example if you send passwords via
+    // form you can replace them with a sequence of *. An example for cookies would be to replace
+    // the authToken cookie with some text.
+    "LogFilters": {
+      "Cookie": {
+        "authToken": "**no tokens saved! pheww**"
+      },
+      "Form": {
+        "password": "*********"
+      },
+      "Header": {
+        "Accept-Language": "*********"
+      },
+      "QueryString": {
+        "queryToken": "*********"
+      }
+    },
+    // Error messages to ignore depending on type or regex pattern
+    "Ignore": {
+      // List of regex patterns. Exceptions with messages matching one of these patterns aren't logged
+      "Regexes": [
+        "Request timed out\\.$",
+        "Top SECRET DATA\\.$"
+      ],
+      // List of error types. Exceptions with matching types aren't logged
+      "Types": [
+        //"MyNameSpace.MyException",
+        //"MyNameSpace.NoLogPleaseException"
+      ]
+    },
+    // For SQL ErrorStore a connection string is needed, many applications can log to the same place as long as they have unique names (otherwise we can't tell them apart).
+    "Store": {
+      //"ApplicationName": "Samples (ASP.NET Core)",
+      "Type": "SQL",
+      "ConnectionString": "data source=192.168.222.15\\sql2014;initial catalog=FPTTicketException;persist security info=True;user id=fptapp;password=dsvn@123456;multipleactiveresultsets=True;Max Pool Size=1000;Connect Timeout=600;TrustServerCertificate=true;"
+    }
+  }
+}

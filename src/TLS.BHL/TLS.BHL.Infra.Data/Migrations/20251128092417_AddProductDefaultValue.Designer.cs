@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TLS.BHL.Infra.Data.SQL.Contexts;
 
@@ -11,9 +12,11 @@ using TLS.BHL.Infra.Data.SQL.Contexts;
 namespace TLS.BHL.Infra.Data.Migrations
 {
     [DbContext(typeof(BHLSqlDbContext))]
-    partial class BHLSqlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251128092417_AddProductDefaultValue")]
+    partial class AddProductDefaultValue
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

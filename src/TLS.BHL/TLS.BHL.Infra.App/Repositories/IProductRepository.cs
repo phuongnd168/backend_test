@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TLS.BHL.Infra.App.Domain.DTO.Order;
 using TLS.BHL.Infra.App.Domain.DTO.Product;
 using TLS.BHL.Infra.App.Domain.DTO.User;
 using TLS.BHL.Infra.App.Domain.Entities;
@@ -12,7 +13,9 @@ namespace TLS.BHL.Infra.App.Repositories
 {
     public interface IProductRepository : IRepository
     {
-        Task<IEnumerable<ProductEntity>> GetListProduct();
+        Task<List<GetListProductItemDto>> GetListProduct();
         Task<string> UpdateProductCount(IList<UpdateProductDTO> products, CancellationToken cancellationToken);
+        Task<string> DeleteProduct(int id, CancellationToken cancellationToken);
+        Task<string> CreateProduct(CreateProductDTO product, CancellationToken cancellationToken);
     }
 }

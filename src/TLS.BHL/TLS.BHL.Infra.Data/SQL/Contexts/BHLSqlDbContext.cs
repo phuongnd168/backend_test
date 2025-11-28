@@ -25,12 +25,12 @@ namespace TLS.BHL.Infra.Data.SQL.Contexts
         public DbSet<RoleEntity> Roles { get; set; }
 
         public DbSet<UserRoleEntity> UserRoles { get; set; }
-        public DbSet<ProductEntity> Products { get; set; } 
+        public DbSet<ProductEntity> Products { get; set; }
         public DbSet<CategoryEntity> Categories { get; set; }
-  
+
         public DbSet<OrderEntity> Orders { get; set; }
         public DbSet<StatusEntity> Status { get; set; }
-        //public DbSet<ProductCategoryEntity> ProductCategories { get; set; }
+        public DbSet<ProductCategoryEntity> ProductCategories { get; set; }
 
         public int SaveChanges()
         {
@@ -112,39 +112,45 @@ namespace TLS.BHL.Infra.Data.SQL.Contexts
                 entity.Property(x => x.NameVi).IsRequired().HasMaxLength(250);
                 entity.Property(x => x.NameEn).IsRequired().HasMaxLength(250);
                 entity.Property(x => x.Img).IsRequired().HasMaxLength(250);
+                entity.Property(x => x.Deleted_by).HasDefaultValue("phuong");
+                entity.Property(x => x.Created_by).HasDefaultValue("phuong");
+                entity.Property(x => x.Updated_by).HasDefaultValue("phuong");
                 entity.Property(x => x.Deleted).HasDefaultValue(false);
             });
             builder.Entity<OrderEntity>(entity =>
             {
                 entity.Property(x => x.Id).UseIdentityColumn();
                 entity.Property(x => x.Products).IsRequired();
-              
+
                 entity.Property(x => x.Deleted_by).HasDefaultValue("phuong");
                 entity.Property(x => x.Created_by).HasDefaultValue("phuong");
                 entity.Property(x => x.Updated_by).HasDefaultValue("phuong");
                 entity.Property(x => x.statusId).HasDefaultValue(0);
                 entity.Property(x => x.Deleted).HasDefaultValue(false);
             });
+            builder.Entity<ProductCategoryEntity>(entity =>
+            {
+                entity.Property(x => x.ProductsId);
+                entity.Property(x => x.CategoriesId);
+
+            });
 
 
-            builder.Entity<ProductEntity>()
-            .HasMany(p => p.Categories)
-            .WithMany(c => c.Products)
-            .UsingEntity(j => j.ToTable("ProductCategories"));
+            //builder.Entity<ProductEntity>()
+            //.HasMany(p => p.Categories)
+            //.WithMany(c => c.Products)
+            //.UsingEntity(j => j.ToTable("ProductCategories"));
             builder.Entity<OrderEntity>()
             .HasOne(o => o.User)          // 1 Order có 1 User
             .WithMany(u => u.Orders)      // 1 User có nhiều Orders
             .HasForeignKey(o => o.UserId) // FK nằm ở Order
             .OnDelete(DeleteBehavior.Cascade);
             builder.Entity<OrderEntity>()
-           .HasOne(o => o.Status)          
-           .WithMany(u => u.Orders)      
-           .HasForeignKey(o => o.statusId) 
+           .HasOne(o => o.Status)
+           .WithMany(u => u.Orders)
+           .HasForeignKey(o => o.statusId)
            .OnDelete(DeleteBehavior.Cascade);
-            //builder.Entity<UserEntity>()
-            //    .Property(b => b.Created_at)
-            //    .IsRequired(false)
-            //    .HasDefaultValueSql();
+         
         }
     }
 }

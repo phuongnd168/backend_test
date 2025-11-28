@@ -25,9 +25,9 @@ namespace TLS.BHL.Web.AdminHandlers.AutoMapper
 
             CreateMap<CategoryEntity, GetListCategoryItem>();
 
-            CreateMap<ProductEntity, GetListProductItem>();
+            //CreateMap<ProductEntity, GetListProductItem>();
 
-            CreateMap<CategoryEntity, GetListCategoryId>();
+            //CreateMap<CategoryEntity, GetListCategoryId>();
 
 
 
@@ -37,7 +37,7 @@ namespace TLS.BHL.Web.AdminHandlers.AutoMapper
              .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId))
              .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => src.Created_at))
              .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.Status.Name));
-
+          
         }
     }
 }

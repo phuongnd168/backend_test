@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TLS.BHL.Infra.App.Domain.DTO.Order;
 using TLS.BHL.Infra.App.Domain.DTO.Product;
 using TLS.BHL.Infra.App.Domain.DTO.User;
 using TLS.BHL.Infra.App.Domain.Entities;
@@ -20,10 +21,21 @@ namespace TLS.BHL.Infra.Business.Services
             ProductRepo = productRepo;
         }
 
-        public async Task<IEnumerable<ProductEntity>> GetListProduct()
+        public async Task<string> CreateProduct(CreateProductDTO product, CancellationToken cancellationToken)
+        {
+            return await ProductRepo.CreateProduct(product, cancellationToken);
+        }
+
+        public async Task<string> DeleteProduct(int id, CancellationToken cancellationToken)
+        {
+            return await ProductRepo.DeleteProduct(id, cancellationToken);
+        }
+
+        public async Task<List<GetListProductItemDto>> GetListProduct()
         {
             return await ProductRepo.GetListProduct();
         }
+
         public async Task<string> UpdateProductCount(IList<UpdateProductDTO> products, CancellationToken cancellationToken)
         {
             

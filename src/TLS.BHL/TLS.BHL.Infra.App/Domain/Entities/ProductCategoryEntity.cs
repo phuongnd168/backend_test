@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace TLS.BHL.Infra.App.Domain.Entities
 {
-    public class ProductCategoryEntity
+    public class ProductCategoryEntity : BaseEntity
     {
-        public int ProductId { get; set; }
-        public ProductEntity Product { get; set; } = null!;
 
-        public int CategoryId { get; set; }
-        public CategoryEntity Category { get; set; } = null!;
+        public int ProductsId { get; set; }
+        public ProductEntity? Product { get; set; }
+
+        public int CategoriesId { get; set; }
+        public CategoryEntity? Category { get; set; }
     }
 }

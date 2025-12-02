@@ -12,6 +12,6 @@ namespace TLS.BHL.Infra.App.Domain.Entities
     {
         public string? NameVi { get; set; }
         public string? NameEn { get; set; }
-        public ICollection<ProductCategoryEntity> ProductCategorys { get; set; } = new List<ProductCategoryEntity>();
+        public ICollection<ProductCategoryEntity> ProductCategories { get; set; } = new List<ProductCategoryEntity>();
     }
 }

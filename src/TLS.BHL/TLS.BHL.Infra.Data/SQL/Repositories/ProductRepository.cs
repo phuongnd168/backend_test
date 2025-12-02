@@ -28,6 +28,8 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
 
         public async Task<string> DeleteProduct(int id, CancellationToken cancellationToken)
         {
+           
+
             var product = await Context.Products.FindAsync(id);
             if(product == null)
             {
@@ -40,7 +42,10 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
 
         public async Task<string> CreateProduct(CreateProductDTO product, CancellationToken cancellationToken)
         {
-            var productE = new ProductEntity
+            using var transaction = await (Context as DbContext).Database.BeginTransactionAsync(cancellationToken);
+            try
+            {
+                var productE = new ProductEntity
             {
                 NameVi = product.NameVi,
                 NameEn = product.NameEn,
@@ -53,7 +58,11 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
             await Context.SaveChangesAsync(cancellationToken);
             foreach (var category in product.ListCategory)
             {
-
+                var cate = await Context.Categories.FindAsync(category);
+                if(cate == null)
+                {
+                    return "Không tồn tại danh mục";
+                }
                 await Context.ProductCategories.AddAsync(new ProductCategoryEntity{
                     CategoriesId = category,
                     ProductsId = productE.Id
@@ -61,34 +70,40 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
             }
 
             await Context.SaveChangesAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
 
 
-
-            return "Thành công";
+                return "Thành công";
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
+            }
         }
 
         public async Task<List<GetListProductItemDto>> GetListProduct()
         {
-            var query = from o in Context.Products
-                        join c in Context.ProductCategories
-                            on o.Id equals c.ProductsId
-                        join ct in Context.Categories
-                            on c.CategoriesId equals ct.Id
-                        select new GetListProductItemDto
+            var query =
+                       from o in Context.Products
+                       where !o.Deleted
+                       join c in Context.ProductCategories on o.Id equals c.ProductsId
+                       join ct in Context.Categories on c.CategoriesId equals ct.Id
+                       group ct by o into g
+                       select new GetListProductItemDto
                         {
-                            Id = o.Id,
-                            NameVi = o.NameVi,
-                            NameEn = o.NameEn,
-                            Img = o.Img,
-                            Price = o.Price,
-                            Quantity = o.Quantity,
-                            CategorieId = ct.Id
+                            Id = g.Key.Id,
+                            NameVi = g.Key.NameVi,
+                            NameEn = g.Key.NameEn,
+                            Img = g.Key.Img,
+                            Price = g.Key.Price,
+                            Quantity = g.Key.Quantity,
+                            CategoryId = g.Select(x => x.Id).ToList()
                         };
-
             return await query.ToListAsync();
 
         }
-        public async Task<string> UpdateProductCount(IList<UpdateProductDTO> products, CancellationToken cancellationToken)
+        public async Task<string> UpdateProductCount(IList<UpdateProductCountDTO> products, CancellationToken cancellationToken)
         {
 
             foreach (var product in products)
@@ -118,6 +133,84 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
             return "Update thành công";
         }
 
-      
+        public async Task<string> UpdateProduct(int productId, UpdateProductDTO product, CancellationToken cancellationToken)
+        {
+            using var transaction = await (Context as DbContext).Database.BeginTransactionAsync(cancellationToken);
+            try
+            {
+            var result = await Context.Products.FindAsync(productId);
+            if(result == null)
+            {
+                return "Sản phẩm không tồn tại";
+            }
+            var productCategories = await Context.ProductCategories
+                .Where(pc => pc.ProductsId == result.Id)
+                .ToListAsync();
+            foreach (var pc in productCategories) {
+                 Context.ProductCategories.Remove(pc);
+            }
+            await Context.SaveChangesAsync(cancellationToken);
+
+ 
+            foreach (var category in product.ListCategory)
+            {
+                var cate = await Context.Categories.FindAsync(category);
+                if (cate == null)
+                {
+                    return "Không tồn tại danh mục";
+                }
+                await Context.ProductCategories.AddAsync(new ProductCategoryEntity
+                {
+                    CategoriesId = category,
+                    ProductsId = result.Id
+                });
+            }
+
+            result.NameVi = product.NameVi;
+            result.NameEn = product.NameEn;
+            result.Img = product.Img;
+            result.Quantity = product.Quantity;
+            result.Price = product.Price;
+            result.Updated_at = DateTime.Now;
+
+
+            await Context.SaveChangesAsync(cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+
+            return "Thành công";
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                throw;
+            }
+        }
+
+        public async Task<GetListProductItemDto> GetProductById(int id, CancellationToken cancellationToken)
+        {
+
+            var query = 
+                       from o in Context.Products
+                       where !o.Deleted && o.Id == id
+                       join c in Context.ProductCategories on o.Id equals c.ProductsId
+                       join ct in Context.Categories on c.CategoriesId equals ct.Id
+                       group ct by o into g
+                       select new GetListProductItemDto
+                       {
+                           Id = g.Key.Id,
+                           NameVi = g.Key.NameVi,
+                           NameEn = g.Key.NameEn,
+                           Img = g.Key.Img,
+                           Price = g.Key.Price,
+                           Quantity = g.Key.Quantity,
+                           CategoryId = g.Select(x => x.Id).ToList()
+                       };
+            var product = await query.FirstOrDefaultAsync();
+            if (product == null)
+            {
+                return null;
+            }
+            return product;
+        }
     }
 }

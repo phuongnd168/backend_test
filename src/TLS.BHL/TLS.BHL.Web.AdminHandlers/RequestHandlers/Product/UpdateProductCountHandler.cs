@@ -38,7 +38,7 @@ namespace TLS.BHL.Web.AdminHandlers.RequestHandlers.Product
     }
     public class UpdateProductCountInput : IRequest<UpdateProductCountOutput>
     {
-        public IList<UpdateProductDTO> Carts { get; set; }
+        public IList<UpdateProductCountDTO> Carts { get; set; }
         
 
     }

@@ -36,7 +36,17 @@ namespace TLS.BHL.Infra.Business.Services
             return await ProductRepo.GetListProduct();
         }
 
-        public async Task<string> UpdateProductCount(IList<UpdateProductDTO> products, CancellationToken cancellationToken)
+        public async Task<GetListProductItemDto> GetProductById(int id, CancellationToken cancellationToken)
+        {
+            return await ProductRepo.GetProductById(id, cancellationToken);
+        }
+
+        public async Task<string> UpdateProduct(int productId, UpdateProductDTO product, CancellationToken cancellationToken)
+        {
+            return await ProductRepo.UpdateProduct(productId, product, cancellationToken);
+        }
+
+        public async Task<string> UpdateProductCount(IList<UpdateProductCountDTO> products, CancellationToken cancellationToken)
         {
             
        

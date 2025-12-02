@@ -132,7 +132,10 @@ namespace TLS.BHL.Infra.Data.SQL.Contexts
             {
                 entity.Property(x => x.ProductsId);
                 entity.Property(x => x.CategoriesId);
-
+                entity.Property(x => x.Deleted_by).HasDefaultValue("phuong");
+                entity.Property(x => x.Created_by).HasDefaultValue("phuong");
+                entity.Property(x => x.Updated_by).HasDefaultValue("phuong");
+                entity.Property(x => x.Deleted).HasDefaultValue(false);
             });
 
 

@@ -11,10 +11,10 @@ using TLS.BHL.Infra.App.Services;
 
 namespace TLS.BHL.Web.AdminHandlers.RequestHandlers.Product
 {
-    public class CretaProductHandler : WebAdminHandlersBase<CretaProductHandler>, IRequestHandler<CreateProductInput, CreateProductOutput>
+    public class CreateProductHandler : WebAdminHandlersBase<CreateProductHandler>, IRequestHandler<CreateProductInput, CreateProductOutput>
     {
         private IProductService ProductService => GetService<IProductService>();
-        public CretaProductHandler(IServiceProvider serviceProvider) : base(serviceProvider)
+        public CreateProductHandler(IServiceProvider serviceProvider) : base(serviceProvider)
         {
         }
         public async Task<CreateProductOutput> Handle(CreateProductInput request, CancellationToken cancellationToken)

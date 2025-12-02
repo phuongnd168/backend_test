@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TLS.BHL.Infra.App.Domain.DTO.Order;
 using TLS.BHL.Web.AdminHandlers.RequestHandlers.Order;
 
 namespace TLS.BHL.Web.AdminApi.Controllers
@@ -24,11 +25,11 @@ namespace TLS.BHL.Web.AdminApi.Controllers
         }
         [AllowAnonymous]
         [HttpPost]
-        public async Task<CreateOrderProductOutput> CreateOrderProduct([FromBody] CreateOrderProductInput input)
+        public async Task<CreateOrderProductOutput> CreateOrderProduct([FromBody] CreateOrderProductDTO input)
         {
             try
             {
-                return await Mediator.Send(input, HttpContext.RequestAborted);
+                return await Mediator.Send(new CreateOrderProductInput { createOrder = input}, HttpContext.RequestAborted);
             }
             catch (Exception ex)
             {

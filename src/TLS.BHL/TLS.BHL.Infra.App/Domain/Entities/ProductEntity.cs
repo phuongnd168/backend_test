@@ -17,7 +17,7 @@ namespace TLS.BHL.Infra.App.Domain.Entities
         public double Price { get; set; }
         public int Quantity { get; set; }
    
-        public ICollection<ProductCategoryEntity> ProductCategorys  { get; set; } = new List<ProductCategoryEntity>();
+        public ICollection<ProductCategoryEntity> ProductCategories  { get; set; } = new List<ProductCategoryEntity>();
 
     }
 

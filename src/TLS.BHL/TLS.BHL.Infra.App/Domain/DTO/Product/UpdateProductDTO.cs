@@ -8,9 +8,12 @@ namespace TLS.BHL.Infra.App.Domain.DTO.Product
 {
     public class UpdateProductDTO
     {
-        public int Id { get; set; }
-    
-        public int Count { get; set; }
-
+       
+        public string NameVi { get; set; }
+        public string NameEn { get; set; }
+        public string Img { get; set; }
+        public double Price { get; set; }
+        public int Quantity { get; set; }
+        public List<int> ListCategory { get; set; }
     }
 }

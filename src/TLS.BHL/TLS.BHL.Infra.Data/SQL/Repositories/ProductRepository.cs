@@ -150,7 +150,7 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
 
                 await Context.SaveChangesAsync(cancellationToken);
 
-                return ResponseHelper.Success("Cập nhật thành công");
+                return ResponseHelper.Updated("Cập nhật thành công");
             }
             catch (Exception ex)
             {
@@ -204,7 +204,7 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
             await Context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
 
-            return ResponseHelper.Success("Cập nhật thành công");
+            return ResponseHelper.Updated("Cập nhật thành công");
             }
             catch (Exception ex)
             {

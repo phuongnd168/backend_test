@@ -59,8 +59,8 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
                 NameVi = product.NameVi,
                 NameEn = product.NameEn,
                 Img = product.Img,
-                Quantity = product.Quantity,
-                Price = product.Price,
+                Quantity = product.Quantity ?? 0,
+                Price = product.Price ?? 0,
                 Created_at = DateTime.Now
             };
             await Context.Products.AddAsync(productE);
@@ -143,7 +143,7 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
                         return ResponseHelper.Error(404, "Không thể cập nhật vì số lượng sản phẩm vượt quá số lượng thực tế");
                     }
 
-                    result.Quantity -= product.Count;
+                    result.Quantity -= product.Count??0;
                 }
 
 
@@ -196,8 +196,8 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
             result.NameVi = product.NameVi;
             result.NameEn = product.NameEn;
             result.Img = product.Img;
-            result.Quantity = product.Quantity;
-            result.Price = product.Price;
+            result.Quantity = product.Quantity??0;
+            result.Price = product.Price??0;
             result.Updated_at = DateTime.Now;
 
 

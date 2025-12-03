@@ -5,17 +5,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TLS.BHL.Infra.App.Domain.DTO.Product;
+using TLS.BHL.Infra.App.Domain.Models;
 using TLS.BHL.Infra.App.Services;
 
 
 namespace TLS.BHL.Web.AdminHandlers.RequestHandlers.Product
 {
-    public class GetListProductInput : IRequest<List<GetListProductItemDto>>
+    public class GetListProductInput : IRequest<ApiResponse>
     {
     }
     public class GetListProductHandler
      : WebAdminHandlersBase<GetListProductHandler>,
-       IRequestHandler<GetListProductInput, List<GetListProductItemDto>>
+       IRequestHandler<GetListProductInput, ApiResponse>
     {
         private IProductService ProductService => GetService<IProductService>();
 
@@ -23,7 +24,7 @@ namespace TLS.BHL.Web.AdminHandlers.RequestHandlers.Product
         {
         }
 
-        public async Task<List<GetListProductItemDto>> Handle(GetListProductInput request, CancellationToken cancellationToken)
+        public async Task<ApiResponse> Handle(GetListProductInput request, CancellationToken cancellationToken)
         {
             return await ProductService.GetListProduct();
           

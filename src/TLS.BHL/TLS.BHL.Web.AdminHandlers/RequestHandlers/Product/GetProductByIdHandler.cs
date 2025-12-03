@@ -7,17 +7,18 @@ using System.Text;
 using System.Threading.Tasks;
 using TLS.BHL.Infra.App.Domain.DTO.Product;
 using TLS.BHL.Infra.App.Domain.Entities;
+using TLS.BHL.Infra.App.Domain.Models;
 using TLS.BHL.Infra.App.Services;
-using static TLS.BHL.Web.AdminHandlers.RequestHandlers.Product.GetProductByIdHandler;
+
 
 namespace TLS.BHL.Web.AdminHandlers.RequestHandlers.Product
 {
-    public record GetProductByIdInput(int id) : IRequest<GetProductByIdOutput>
+    public record GetProductByIdInput(int id) : IRequest<ApiResponse>
     {
     }
     public class GetProductByIdHandler
      : WebAdminHandlersBase<GetProductByIdHandler>,
-       IRequestHandler<GetProductByIdInput, GetProductByIdOutput>
+       IRequestHandler<GetProductByIdInput, ApiResponse>
     {
         private IProductService ProductService => GetService<IProductService>();
 
@@ -25,19 +26,13 @@ namespace TLS.BHL.Web.AdminHandlers.RequestHandlers.Product
         {
         }
 
-        public async Task<GetProductByIdOutput> Handle(GetProductByIdInput request, CancellationToken cancellationToken)
+        public async Task<ApiResponse> Handle(GetProductByIdInput request, CancellationToken cancellationToken)
         {
-            var result = await ProductService.GetProductById(request.id, cancellationToken);
-            return new GetProductByIdOutput
-            {
-                Data = result == null ? "Không tồn tại sản phẩm":result
-            };
+            return await ProductService.GetProductById(request.id, cancellationToken);
+         
         }
 
-        public class GetProductByIdOutput
-        {
-            public object Data { get; set; }
-        }
+    
     }
 
 }

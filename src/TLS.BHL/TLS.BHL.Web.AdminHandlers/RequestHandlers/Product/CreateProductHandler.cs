@@ -7,35 +7,29 @@ using System.Threading.Tasks;
 using TLS.BHL.Infra.App.Domain.DTO.Order;
 using TLS.BHL.Infra.App.Domain.DTO.Product;
 using TLS.BHL.Infra.App.Domain.Entities;
+using TLS.BHL.Infra.App.Domain.Models;
 using TLS.BHL.Infra.App.Services;
 
 namespace TLS.BHL.Web.AdminHandlers.RequestHandlers.Product
 {
-    public class CreateProductHandler : WebAdminHandlersBase<CreateProductHandler>, IRequestHandler<CreateProductInput, CreateProductOutput>
+    public class CreateProductHandler : WebAdminHandlersBase<CreateProductHandler>, IRequestHandler<CreateProductInput, ApiResponse>
     {
         private IProductService ProductService => GetService<IProductService>();
         public CreateProductHandler(IServiceProvider serviceProvider) : base(serviceProvider)
         {
         }
-        public async Task<CreateProductOutput> Handle(CreateProductInput request, CancellationToken cancellationToken)
+        public async Task<ApiResponse> Handle(CreateProductInput request, CancellationToken cancellationToken)
         {
             
 
-            var res = await ProductService.CreateProduct(request.createProduct, cancellationToken);
+            return await ProductService.CreateProduct(request.createProduct, cancellationToken);
 
-            return new CreateProductOutput
-            {
-                Data = res
-            };
+            
         }
     }
-    public class CreateProductInput : IRequest<CreateProductOutput>
+    public class CreateProductInput : IRequest<ApiResponse>
     {
         public CreateProductDTO createProduct { get; set; }
 
-    }
-    public class CreateProductOutput
-    {
-        public string Data { get; set; }
     }
 }

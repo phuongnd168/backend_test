@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TLS.BHL.Infra.App.Domain.DTO.Order;
+using TLS.BHL.Infra.App.Domain.Models;
 using TLS.BHL.Web.AdminHandlers.RequestHandlers.Order;
 
 namespace TLS.BHL.Web.AdminApi.Controllers
@@ -9,9 +10,9 @@ namespace TLS.BHL.Web.AdminApi.Controllers
     [ApiController]
     public class OrderProductController : WebAdminControllersBase<OrderProductController>
     {
-        [AllowAnonymous]
+ 
         [HttpGet]
-        public async Task<GetListOrderOutput> List()
+        public async Task<ApiResponse> List()
         {
             try
             {
@@ -23,9 +24,9 @@ namespace TLS.BHL.Web.AdminApi.Controllers
                 throw LogError(ex);
             }
         }
-        [AllowAnonymous]
+
         [HttpPost]
-        public async Task<CreateOrderProductOutput> CreateOrderProduct([FromBody] CreateOrderProductDTO input)
+        public async Task<ApiResponse> CreateOrderProduct([FromBody] CreateOrderProductDTO input)
         {
             try
             {

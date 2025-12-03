@@ -11,42 +11,36 @@ using System.Threading.Tasks;
 using TLS.BHL.Infra.App.Domain.DTO.Product;
 using TLS.BHL.Infra.App.Domain.DTO.User;
 using TLS.BHL.Infra.App.Domain.Entities;
+using TLS.BHL.Infra.App.Domain.Models;
 using TLS.BHL.Infra.App.Services;
 
 namespace TLS.BHL.Web.AdminHandlers.RequestHandlers.Product
 {
-    public class UpdateProductCountHandler : WebAdminHandlersBase<UpdateProductCountHandler>, IRequestHandler<UpdateProductCountInput, UpdateProductCountOutput>
+    public class UpdateProductCountHandler : WebAdminHandlersBase<UpdateProductCountHandler>, IRequestHandler<UpdateProductCountInput, ApiResponse>
     {
      
 
         private IProductService ProductService => GetService<IProductService>();
         public UpdateProductCountHandler(IServiceProvider serviceProvider) : base(serviceProvider)
         {
-           
 
         }
 
-        public async Task<UpdateProductCountOutput> Handle(UpdateProductCountInput input, CancellationToken cancellationToken)
+        public async Task<ApiResponse> Handle(UpdateProductCountInput input, CancellationToken cancellationToken)
         {
          
-            var res = await ProductService.UpdateProductCount(input.Carts, cancellationToken);
-            return  new UpdateProductCountOutput
-            {
-                Data = res
-            };
+            return await ProductService.UpdateProductCount(input.Carts, cancellationToken);
+
         }
     }
-    public class UpdateProductCountInput : IRequest<UpdateProductCountOutput>
+    public class UpdateProductCountInput : IRequest<ApiResponse>
     {
-        public IList<UpdateProductCountDTO> Carts { get; set; }
+        public List<UpdateProductCountDTO> Carts { get; set; }
         
 
     }
   
-    public class UpdateProductCountOutput
-    {
-        public string Data { get; set; }
-    }
+ 
 
 
 

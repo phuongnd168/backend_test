@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TLS.BHL.Infra.App.Domain.Models;
 using TLS.BHL.Web.AdminHandlers.RequestHandlers.Category;
 using TLS.BHL.Web.AdminHandlers.RequestHandlers.User;
 
@@ -10,13 +11,12 @@ namespace TLS.BHL.Web.AdminApi.Controllers
     [ApiController]
     public class CategoryController : WebAdminControllersBase<CategoryController>
     {
-        [AllowAnonymous]
+
         [HttpGet]
-        public async Task<GetListCategoryOutput> List()
+        public async Task<ApiResponse> List()
         {
             try
             {
-             
                 return await Mediator.Send(new GetListCategoryInput(), HttpContext.RequestAborted);
             }
             catch (Exception ex)

@@ -5,8 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TLS.BHL.Infra.App.Domain.DTO.Category;
 using TLS.BHL.Infra.App.Domain.Entities;
+using TLS.BHL.Infra.App.Domain.Helper;
+using TLS.BHL.Infra.App.Domain.Models;
 using TLS.BHL.Infra.App.Repositories;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TLS.BHL.Infra.Data.SQL.Repositories
 {
@@ -18,11 +22,28 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
             Context = context;
         }
 
-        public async Task<IEnumerable<CategoryEntity>> GetListCategory()
+        public async Task<ApiResponse> GetListCategory()
         {
+            try { 
+                  var categories = await Context.Categories.ToListAsync();
+                  List<GetListCategoryItemDTO> data = new List<GetListCategoryItemDTO>();
+                  foreach (var category in categories){
+                      data.Add(new GetListCategoryItemDTO
+                      {
+                        Id = category.Id,
+                        NameEn = category.NameEn,
+                        NameVi = category.NameVi
+                      });
+                  }
 
-      
-            return await Context.Categories.ToListAsync();
+
+                return ResponseHelper.Success("Thành công", data);
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.Error(500, ex.Message);
+            }
+          
 
         }
     }

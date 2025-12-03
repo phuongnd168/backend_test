@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TLS.BHL.Infra.App.Domain.DTO.Product
 {
-    public class GetListProductItemDto
+    public class GetListProductItemDTO
     {
         public int Id { get; set; }
         public string NameVi { get; set; }

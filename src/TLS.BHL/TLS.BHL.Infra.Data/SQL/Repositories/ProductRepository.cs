@@ -6,11 +6,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using TLS.BHL.Infra.App.Domain.DTO.Order;
 using TLS.BHL.Infra.App.Domain.DTO.Product;
 using TLS.BHL.Infra.App.Domain.DTO.User;
 using TLS.BHL.Infra.App.Domain.Entities;
+using TLS.BHL.Infra.App.Domain.Helper;
+using TLS.BHL.Infra.App.Domain.Models;
 using TLS.BHL.Infra.App.Repositories;
 using TLS.Core.Data;
 
@@ -26,21 +29,27 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
             Context = context;
         }
 
-        public async Task<string> DeleteProduct(int id, CancellationToken cancellationToken)
+        public async Task<ApiResponse> DeleteProduct(int id, CancellationToken cancellationToken)
         {
-           
 
-            var product = await Context.Products.FindAsync(id);
-            if(product == null)
-            {
-                return "Không tồn tại sản phẩm";
+            try {
+                var product = await Context.Products.FindAsync(id);
+                if (product == null)
+                {
+                    return ResponseHelper.Error(404, "Không tìm thấy sản phẩm");
+                }
+                product.Deleted = true;
+                await Context.SaveChangesAsync(cancellationToken);
+                return ResponseHelper.Success("Xóa sản phẩm thành công");
             }
-            product.Deleted = true;
-            await Context.SaveChangesAsync(cancellationToken);
-            return "Xóa sản phẩm thành công";
+            catch (Exception ex)
+            {
+                return ResponseHelper.Error(500, ex.Message);
+            }
+
         }
 
-        public async Task<string> CreateProduct(CreateProductDTO product, CancellationToken cancellationToken)
+        public async Task<ApiResponse> CreateProduct(CreateProductDTO product, CancellationToken cancellationToken)
         {
             using var transaction = await (Context as DbContext).Database.BeginTransactionAsync(cancellationToken);
             try
@@ -61,7 +70,7 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
                 var cate = await Context.Categories.FindAsync(category);
                 if(cate == null)
                 {
-                    return "Không tồn tại danh mục";
+                    return ResponseHelper.Error(404, "Không tìm thấy danh mục");
                 }
                 await Context.ProductCategories.AddAsync(new ProductCategoryEntity{
                     CategoriesId = category,
@@ -73,67 +82,85 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
             await transaction.CommitAsync(cancellationToken);
 
 
-                return "Thành công";
+                return ResponseHelper.Created("Thêm sản phẩm thành công");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 await transaction.RollbackAsync(cancellationToken);
-                throw;
+                return ResponseHelper.Error(500, ex.Message);
             }
         }
 
-        public async Task<List<GetListProductItemDto>> GetListProduct()
+        public async Task<ApiResponse> GetListProduct()
         {
-            var query =
-                       from o in Context.Products
-                       where !o.Deleted
-                       join c in Context.ProductCategories on o.Id equals c.ProductsId
-                       join ct in Context.Categories on c.CategoriesId equals ct.Id
-                       group ct by o into g
-                       select new GetListProductItemDto
-                        {
-                            Id = g.Key.Id,
-                            NameVi = g.Key.NameVi,
-                            NameEn = g.Key.NameEn,
-                            Img = g.Key.Img,
-                            Price = g.Key.Price,
-                            Quantity = g.Key.Quantity,
-                            CategoryId = g.Select(x => x.Id).ToList()
-                        };
-            return await query.ToListAsync();
-
-        }
-        public async Task<string> UpdateProductCount(IList<UpdateProductCountDTO> products, CancellationToken cancellationToken)
-        {
-
-            foreach (var product in products)
+            try {
+                var query =
+                    from o in Context.Products
+                    where !o.Deleted
+                    join pc in Context.ProductCategories on o.Id equals pc.ProductsId into pcJoin
+                    from pc in pcJoin.DefaultIfEmpty()
+                    join ct in Context.Categories on pc.CategoriesId equals ct.Id into ctJoin
+                    from ct in ctJoin.DefaultIfEmpty()
+                    group ct by o into g
+                    select new GetListProductItemDTO
+                    {
+                        Id = g.Key.Id,
+                        NameVi = g.Key.NameVi,
+                        NameEn = g.Key.NameEn,
+                        Img = g.Key.Img,
+                        Price = g.Key.Price,
+                        Quantity = g.Key.Quantity,
+                        CategoryId = g.Where(x => x != null).Select(x => x.Id).ToList()
+                    };
+                var products = await query.ToListAsync();
+                return ResponseHelper.Success("Thành công", products);
+            }
+            catch (Exception ex)
             {
-                var result = await Context.Products.FindAsync(product.Id);
-               
-                if (result == null)
+                return ResponseHelper.Error(500, ex.Message);
+            }
+
+         
+
+        }
+        public async Task<ApiResponse> UpdateProductCount(IList<UpdateProductCountDTO> products, CancellationToken cancellationToken)
+        {
+            try {
+                foreach (var product in products)
                 {
-                    return "Không tồn tại sản phẩm";
+                    var result = await Context.Products.FindAsync(product.Id);
+
+                    if (result == null)
+                    {
+                        return ResponseHelper.Error(404, "Không tìm thấy sản phẩm");
+                    }
+                    if (result.Quantity == 0)
+                    {
+                        return ResponseHelper.Error(404, "Không thể cập nhật vì số lượng sản phẩm đã hết");
+                    }
+                    if (result.Quantity < product.Count)
+                    {
+                        return ResponseHelper.Error(404, "Không thể cập nhật vì số lượng sản phẩm vượt quá số lượng thực tế");
+                    }
+
+                    result.Quantity -= product.Count;
                 }
-                if(result.Quantity == 0)
-                {
-                    return "Không thể cập nhật vì số lượng sản phẩm là 0";
-                }
-                if (result.Quantity < product.Count)
-                {
-                    return "Không thể cập nhật vì số lượng sản phẩm vượt quá số lượng thực tế";
-                }
-                
-                result.Quantity -=product.Count;
+
+
+
+                await Context.SaveChangesAsync(cancellationToken);
+
+                return ResponseHelper.Success("Cập nhật thành công");
+            }
+            catch (Exception ex)
+            {
+                return ResponseHelper.Error(500, ex.Message);
             }
 
 
-
-            await Context.SaveChangesAsync(cancellationToken);
-
-            return "Update thành công";
         }
 
-        public async Task<string> UpdateProduct(int productId, UpdateProductDTO product, CancellationToken cancellationToken)
+        public async Task<ApiResponse> UpdateProduct(int productId, UpdateProductDTO product, CancellationToken cancellationToken)
         {
             using var transaction = await (Context as DbContext).Database.BeginTransactionAsync(cancellationToken);
             try
@@ -141,7 +168,7 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
             var result = await Context.Products.FindAsync(productId);
             if(result == null)
             {
-                return "Sản phẩm không tồn tại";
+                  return ResponseHelper.Error(404, "Không tìm thấy sản phẩm");
             }
             var productCategories = await Context.ProductCategories
                 .Where(pc => pc.ProductsId == result.Id)
@@ -157,7 +184,7 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
                 var cate = await Context.Categories.FindAsync(category);
                 if (cate == null)
                 {
-                    return "Không tồn tại danh mục";
+                    return ResponseHelper.Error(404, "Không tìm thấy danh mục");
                 }
                 await Context.ProductCategories.AddAsync(new ProductCategoryEntity
                 {
@@ -177,40 +204,49 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
             await Context.SaveChangesAsync(cancellationToken);
             await transaction.CommitAsync(cancellationToken);
 
-            return "Thành công";
+            return ResponseHelper.Success("Cập nhật thành công");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 await transaction.RollbackAsync(cancellationToken);
-                throw;
+                return ResponseHelper.Error(500, ex.Message);
             }
         }
 
-        public async Task<GetListProductItemDto> GetProductById(int id, CancellationToken cancellationToken)
+        public async Task<ApiResponse> GetProductById(int id, CancellationToken cancellationToken)
         {
 
-            var query = 
-                       from o in Context.Products
-                       where !o.Deleted && o.Id == id
-                       join c in Context.ProductCategories on o.Id equals c.ProductsId
-                       join ct in Context.Categories on c.CategoriesId equals ct.Id
-                       group ct by o into g
-                       select new GetListProductItemDto
-                       {
-                           Id = g.Key.Id,
-                           NameVi = g.Key.NameVi,
-                           NameEn = g.Key.NameEn,
-                           Img = g.Key.Img,
-                           Price = g.Key.Price,
-                           Quantity = g.Key.Quantity,
-                           CategoryId = g.Select(x => x.Id).ToList()
-                       };
-            var product = await query.FirstOrDefaultAsync();
-            if (product == null)
+            try
             {
-                return null;
+                var query =
+                    from o in Context.Products
+                    where !o.Deleted && o.Id==id
+                    join pc in Context.ProductCategories on o.Id equals pc.ProductsId into pcJoin
+                    from pc in pcJoin.DefaultIfEmpty()
+                    join ct in Context.Categories on pc.CategoriesId equals ct.Id into ctJoin
+                    from ct in ctJoin.DefaultIfEmpty()
+                    group ct by o into g
+                    select new GetListProductItemDTO
+                    {
+                        Id = g.Key.Id,
+                        NameVi = g.Key.NameVi,
+                        NameEn = g.Key.NameEn,
+                        Img = g.Key.Img,
+                        Price = g.Key.Price,
+                        Quantity = g.Key.Quantity,
+                        CategoryId = g.Where(x => x != null).Select(x => x.Id).ToList()
+                    };
+                var product = await query.FirstOrDefaultAsync();
+                if(product == null)
+                {
+                    return ResponseHelper.Error(404, "Không tìm thấy sản phẩm");
+                }
+                return ResponseHelper.Success("Thành công", product);
             }
-            return product;
+            catch (Exception ex)
+            {
+                return ResponseHelper.Error(500, ex.Message);
+            }
         }
     }
 }

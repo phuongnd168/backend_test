@@ -23,20 +23,15 @@ namespace TLS.BHL.Web.AdminHandlers.AutoMapper
             CreateMap<UpdateUserInput, UpdateUserDTO>();
             CreateMap<UserEntity, UserItem>();
 
-            CreateMap<CategoryEntity, GetListCategoryItem>();
-
-            //CreateMap<ProductEntity, GetListProductItem>();
-
-            //CreateMap<CategoryEntity, GetListCategoryId>();
 
 
 
             CreateMap<CreateOrderProductDTO, OrderEntity>();
-            CreateMap<OrderEntity, GetListOrderItem>()
-             .ForMember(dest => dest.Product, opt => opt.MapFrom(src => src.Products))
-             .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId))
-             .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => src.Created_at))
-             .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.Status.Name));
+            //CreateMap<OrderEntity, GetListOrderItem>()
+            // .ForMember(dest => dest.Product, opt => opt.MapFrom(src => src.Products))
+            // .ForMember(dest => dest.OrderId, opt => opt.MapFrom(src => src.OrderId))
+            // .ForMember(dest => dest.CreatedTime, opt => opt.MapFrom(src => src.Created_at))
+            // .ForMember(dest => dest.StatusName, opt => opt.MapFrom(src => src.Status.Name));
           
         }
     }

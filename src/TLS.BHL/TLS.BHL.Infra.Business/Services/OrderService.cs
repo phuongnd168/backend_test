@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TLS.BHL.Infra.App.Domain.DTO.Order;
 using TLS.BHL.Infra.App.Domain.Entities;
+using TLS.BHL.Infra.App.Domain.Models;
 using TLS.BHL.Infra.App.Repositories;
 using TLS.BHL.Infra.App.Services;
 using TLS.Core.Service;
@@ -20,12 +21,12 @@ namespace TLS.BHL.Infra.Business.Services
             OrderRepo = orderRepo;
         }
 
-        public async Task<string> CreateOrderProduct(OrderEntity request, CancellationToken cancellationToken)
+        public async Task<ApiResponse> CreateOrderProduct(CreateOrderProductDTO request, CancellationToken cancellationToken)
         {
             return await OrderRepo.CreateOrderProduct(request, cancellationToken);
         }
 
-        public async Task<IEnumerable<OrderEntity>> GetOrderProduct()
+        public async Task<ApiResponse> GetOrderProduct()
         {
             return await OrderRepo.GetOrderProduct();
         }

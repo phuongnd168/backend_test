@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TLS.BHL.Infra.App.Domain.Entities;
+using TLS.BHL.Infra.App.Domain.Helper;
+using TLS.BHL.Infra.App.Domain.Models;
 using TLS.BHL.Infra.App.Repositories;
 using TLS.BHL.Infra.App.Services;
 using TLS.Core.Service;
@@ -18,7 +20,7 @@ namespace TLS.BHL.Infra.Business.Services
             CategoryRepo = categoryRepo;
         }
 
-        public async Task<IEnumerable<CategoryEntity>> GetListCategory()
+        public async Task<ApiResponse> GetListCategory()
         {
             return await CategoryRepo.GetListCategory();
         }

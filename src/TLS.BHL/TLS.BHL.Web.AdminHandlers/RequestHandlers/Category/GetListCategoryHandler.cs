@@ -24,12 +24,13 @@ namespace TLS.BHL.Web.AdminHandlers.RequestHandlers.Category
             return await CategoryService.GetListCategory();
         }
     }
-
-    }
     public class GetListCategoryInput : IRequest<ApiResponse>
     {
     }
-  
+
+
+}
+
 
 
 

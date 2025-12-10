@@ -32,15 +32,21 @@ namespace TLS.BHL.Infra.Business.Services
             return await ProductRepo.DeleteProduct(id, cancellationToken);
         }
 
-        public async Task<ApiResponse> GetListProduct()
+        public async Task<ApiResponse> GetAllProduct()
         {
-            return await ProductRepo.GetListProduct();
+            return await ProductRepo.GetAllProduct();
         }
 
-        public async Task<ApiResponse> GetProductById(int id, CancellationToken cancellationToken)
+        public async Task<ApiResponse> GetListProduct(string keyword, string sortField, string sortDirection, int page, int pageSize)
         {
-            return await ProductRepo.GetProductById(id, cancellationToken);
+            return await ProductRepo.GetListProduct(keyword, sortField, sortDirection, page, pageSize);
         }
+
+        public async Task<ApiResponse> GetProductById(int id)
+        {
+            return await ProductRepo.GetProductById(id);
+        }
+
 
         public async Task<ApiResponse> UpdateProduct(int productId, UpdateProductDTO product, CancellationToken cancellationToken)
         {

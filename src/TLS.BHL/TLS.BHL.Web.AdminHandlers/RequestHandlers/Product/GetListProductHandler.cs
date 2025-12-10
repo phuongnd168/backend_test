@@ -13,6 +13,11 @@ namespace TLS.BHL.Web.AdminHandlers.RequestHandlers.Product
 {
     public class GetListProductInput : IRequest<ApiResponse>
     {
+        public string? sortField { get; set; }
+        public string? sortDirection { get; set; }
+        public string? keyword { get; set; }
+        public int page { get; set; }
+        public int pageSize { get; set; }
     }
     public class GetListProductHandler
      : WebAdminHandlersBase<GetListProductHandler>,
@@ -26,7 +31,7 @@ namespace TLS.BHL.Web.AdminHandlers.RequestHandlers.Product
 
         public async Task<ApiResponse> Handle(GetListProductInput request, CancellationToken cancellationToken)
         {
-            return await ProductService.GetListProduct();
+            return await ProductService.GetListProduct(request.keyword, request.sortField, request.sortDirection, request.page, request.pageSize);
           
         }
     }

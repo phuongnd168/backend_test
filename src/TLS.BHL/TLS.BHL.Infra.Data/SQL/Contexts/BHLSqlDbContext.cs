@@ -103,6 +103,9 @@ namespace TLS.BHL.Infra.Data.SQL.Contexts
                 entity.Property(x => x.Id).UseIdentityColumn();
                 entity.Property(x => x.NameVi).IsRequired().HasMaxLength(250);
                 entity.Property(x => x.NameEn).IsRequired().HasMaxLength(250);
+                entity.Property(x => x.Deleted_by).HasDefaultValue("phuong");
+                entity.Property(x => x.Created_by).HasDefaultValue("phuong");
+                entity.Property(x => x.Updated_by).HasDefaultValue("phuong");
                 entity.Property(x => x.Deleted).HasDefaultValue(false);
             });
 

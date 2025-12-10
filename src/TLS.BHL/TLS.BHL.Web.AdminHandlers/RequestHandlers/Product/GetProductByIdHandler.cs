@@ -28,7 +28,7 @@ namespace TLS.BHL.Web.AdminHandlers.RequestHandlers.Product
 
         public async Task<ApiResponse> Handle(GetProductByIdInput request, CancellationToken cancellationToken)
         {
-            return await ProductService.GetProductById(request.id, cancellationToken);
+            return await ProductService.GetProductById(request.id);
          
         }
 

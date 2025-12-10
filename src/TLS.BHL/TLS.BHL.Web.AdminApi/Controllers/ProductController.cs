@@ -5,6 +5,7 @@ using TLS.BHL.Infra.App.Domain.DTO.Product;
 using TLS.BHL.Infra.App.Domain.Entities;
 using TLS.BHL.Infra.App.Domain.Models;
 using TLS.BHL.Web.AdminHandlers.RequestHandlers;
+using TLS.BHL.Web.AdminHandlers.RequestHandlers.Category;
 using TLS.BHL.Web.AdminHandlers.RequestHandlers.Product;
 
 
@@ -16,16 +17,29 @@ namespace TLS.BHL.Web.AdminApi.Controllers
     {
 
         [HttpGet]
-        public async Task<ApiResponse> List()
+        public async Task<ApiResponse> List([FromQuery] GetListProductInput search)
         {
             try
             {
-                return await Mediator.Send(new GetListProductInput(), HttpContext.RequestAborted);
+                return await Mediator.Send(search, HttpContext.RequestAborted);
             }
             catch (Exception ex)
             {
                 throw LogError(ex);
             }
+        }
+
+        [HttpGet("all")]
+        public async Task<ApiResponse> GetAllProduct()
+        {
+             try
+             {
+                 return await Mediator.Send(new GetAllProductInput(), HttpContext.RequestAborted);
+             }
+             catch (Exception ex)
+             {
+                 throw LogError(ex);
+             }
         }
 
         [HttpPatch]
@@ -90,5 +104,7 @@ namespace TLS.BHL.Web.AdminApi.Controllers
                 throw LogError(id, ex);
             }
         }
+
+      
     }
 }

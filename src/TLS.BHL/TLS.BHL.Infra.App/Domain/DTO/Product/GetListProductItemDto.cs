@@ -14,6 +14,7 @@ namespace TLS.BHL.Infra.App.Domain.DTO.Product
         public string Img { get; set; }
         public double Price { get; set; }
         public int Quantity { get; set; }
+        public DateTime? CreatedAt { get; set; }
         public List<int> CategoryId { get; set; }
     }
 }

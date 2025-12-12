@@ -15,22 +15,23 @@ namespace TLS.BHL.Infra.App.Domain.Entities
         
         public string UserId { get; set; }
 
-        public required string FullName { get; set; }
+        public string FullName { get; set; }
 
-        public string Mobile {  get; set; }
+        public string? Mobile {  get; set; }
 
         public string Email { get; set; }
 
-        public string Address { get; set; }
+        public string? Address { get; set; }
 
-        public string Avatar { get; set; }
+        public string? Avatar { get; set; }
 
-        public int Type {  get; set; }
+        public int? Type {  get; set; }
 
-        public int Status {  get; set; }
-
+        public int? Status {  get; set; }
+        public string Password { get; set; }
         public ICollection<OrderEntity> Orders { get; set; } = new List<OrderEntity>();
-        public IList<UserRoleEntity> UserRoles { get; set; }
+        public IList<UserRoleEntity>? UserRoles { get; set; }
+        public ForgotPasswordEntity ForgotPassword { get; set; }
 
     }
 }

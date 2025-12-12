@@ -32,6 +32,7 @@ namespace TLS.BHL.Infra.Data.SQL.Contexts
         public DbSet<StatusEntity> Status { get; set; }
         public DbSet<ProductCategoryEntity> ProductCategories { get; set; }
 
+        public DbSet<ForgotPasswordEntity> ForgotPassword { get; set; }
         public int SaveChanges()
         {
             ValidateEntities();
@@ -73,6 +74,11 @@ namespace TLS.BHL.Infra.Data.SQL.Contexts
                 entity.Property(x => x.Id).UseIdentityColumn(1, 1);
                 entity.Property(x => x.FullName).IsRequired().IsUnicode().HasMaxLength(250);
                 entity.Property(x => x.Updated_by).IsUnicode().HasMaxLength(50);
+                entity.HasIndex(x => x.Email).IsUnique();
+                entity.Property(x => x.Deleted_by).HasDefaultValue("phuong");
+                entity.Property(x => x.Created_by).HasDefaultValue("phuong");
+                entity.Property(x => x.Updated_by).HasDefaultValue("phuong");
+                entity.Property(x => x.Deleted).HasDefaultValue(false);
             });
             builder.Entity<RoleEntity>(entity =>
             {
@@ -140,7 +146,20 @@ namespace TLS.BHL.Infra.Data.SQL.Contexts
                 entity.Property(x => x.Updated_by).HasDefaultValue("phuong");
                 entity.Property(x => x.Deleted).HasDefaultValue(false);
             });
-
+            builder.Entity<ForgotPasswordEntity>(entity =>
+            {
+                entity.Property(x => x.UserId).IsRequired();
+                entity.Property(x => x.Otp).IsRequired().HasMaxLength(6);
+                entity.Property(x => x.ExpiredOtpAt).IsRequired();
+                entity.Property(x => x.Deleted_by).HasDefaultValue("phuong");
+                entity.Property(x => x.Created_by).HasDefaultValue("phuong");
+                entity.Property(x => x.Updated_by).HasDefaultValue("phuong");
+                entity.Property(x => x.Deleted).HasDefaultValue(false);
+            });
+            builder.Entity<ForgotPasswordEntity>()
+                .HasOne(u => u.User)
+                .WithOne(p => p.ForgotPassword)
+                .HasForeignKey<ForgotPasswordEntity>(p => p.UserId);
 
             //builder.Entity<ProductEntity>()
             //.HasMany(p => p.Categories)

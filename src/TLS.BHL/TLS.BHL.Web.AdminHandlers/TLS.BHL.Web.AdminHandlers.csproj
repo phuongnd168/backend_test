@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="MailKit" Version="4.14.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\TLS.Lib\TLS.Core.Web\TLS.Core.Web.csproj" />
     <ProjectReference Include="..\..\TLS.Lib\TLS.Core\TLS.Core.csproj" />
     <ProjectReference Include="..\TLS.BHL.Infra.App\TLS.BHL.Infra.App.csproj" />

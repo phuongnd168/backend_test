@@ -16,5 +16,6 @@ namespace TLS.BHL.Infra.Data.SQL
         DbSet<CategoryEntity> Categories { get; }
         DbSet<OrderEntity> Orders { get; }
         DbSet<ProductCategoryEntity> ProductCategories { get; }
+        DbSet<ForgotPasswordEntity> ForgotPassword { get; }
     }
 }

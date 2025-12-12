@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TLS.BHL.Infra.Data.SQL.Contexts;
 
@@ -11,9 +12,11 @@ using TLS.BHL.Infra.Data.SQL.Contexts;
 namespace TLS.BHL.Infra.Data.Migrations
 {
     [DbContext(typeof(BHLSqlDbContext))]
-    partial class BHLSqlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251212025550_ForgotPasswordTable")]
+    partial class ForgotPasswordTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,10 +111,7 @@ namespace TLS.BHL.Infra.Data.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasDefaultValue("phuong");
 
-                    b.Property<DateTime>("ExpiredOtpAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ExpiredResetTokenAt")
+                    b.Property<DateTime>("ExpiredAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Otp")
@@ -130,9 +130,6 @@ namespace TLS.BHL.Infra.Data.Migrations
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
-
-                    b.Property<string>("resetToken")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

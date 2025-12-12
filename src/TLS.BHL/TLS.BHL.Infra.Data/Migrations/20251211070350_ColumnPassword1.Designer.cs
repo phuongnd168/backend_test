@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TLS.BHL.Infra.Data.SQL.Contexts;
 
@@ -11,9 +12,11 @@ using TLS.BHL.Infra.Data.SQL.Contexts;
 namespace TLS.BHL.Infra.Data.Migrations
 {
     [DbContext(typeof(BHLSqlDbContext))]
-    partial class BHLSqlDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251211070350_ColumnPassword1")]
+    partial class ColumnPassword1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -75,71 +78,6 @@ namespace TLS.BHL.Infra.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("TLS.BHL.Infra.App.Domain.Entities.ForgotPasswordEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("Created_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Created_by")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValue("phuong");
-
-                    b.Property<bool>("Deleted")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(false);
-
-                    b.Property<DateTime?>("Deleted_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Deleted_by")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValue("phuong");
-
-                    b.Property<DateTime>("ExpiredOtpAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ExpiredResetTokenAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Otp")
-                        .IsRequired()
-                        .HasMaxLength(6)
-                        .HasColumnType("nvarchar(6)");
-
-                    b.Property<DateTime?>("Updated_at")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Updated_by")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(max)")
-                        .HasDefaultValue("phuong");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("resetToken")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("ForgotPassword");
                 });
 
             modelBuilder.Entity("TLS.BHL.Infra.App.Domain.Entities.OrderEntity", b =>
@@ -514,7 +452,6 @@ namespace TLS.BHL.Infra.Data.Migrations
                         .HasDefaultValue("phuong");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FullName")
@@ -554,7 +491,8 @@ namespace TLS.BHL.Infra.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Email] IS NOT NULL");
 
                     b.ToTable("Users");
                 });
@@ -580,17 +518,6 @@ namespace TLS.BHL.Infra.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("User_Roles");
-                });
-
-            modelBuilder.Entity("TLS.BHL.Infra.App.Domain.Entities.ForgotPasswordEntity", b =>
-                {
-                    b.HasOne("TLS.BHL.Infra.App.Domain.Entities.UserEntity", "User")
-                        .WithOne("ForgotPassword")
-                        .HasForeignKey("TLS.BHL.Infra.App.Domain.Entities.ForgotPasswordEntity", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TLS.BHL.Infra.App.Domain.Entities.OrderEntity", b =>
@@ -670,9 +597,6 @@ namespace TLS.BHL.Infra.Data.Migrations
 
             modelBuilder.Entity("TLS.BHL.Infra.App.Domain.Entities.UserEntity", b =>
                 {
-                    b.Navigation("ForgotPassword")
-                        .IsRequired();
-
                     b.Navigation("Orders");
 
                     b.Navigation("UserRoles");

@@ -130,7 +130,7 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
                     {
                         dir = "asc";
                     }
-                    switch (sortField.ToLower())
+                    switch (sortField.Trim().ToLower())
                     {
                
                         case "namevi":

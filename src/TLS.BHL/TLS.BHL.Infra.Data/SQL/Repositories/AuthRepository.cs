@@ -65,7 +65,7 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
             var check = await Context.ForgotPassword.Where(x => x.Otp == otp && x.UserId == mail.Id).FirstOrDefaultAsync();
             if (check == null)
             {
-                return ResponseHelper.Error(404, "Mã otp không tồn tại");
+                return ResponseHelper.Error(404, "Mã otp không đúng");
             }
             if (check.ExpiredOtpAt < DateTime.Now)
             {
@@ -151,7 +151,7 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
             if (result)
             {
                 var checkOtp = await Context.ForgotPassword.Where(x => x.UserId == mail.Id).FirstOrDefaultAsync();
-                if (checkOtp !=null)
+                if (checkOtp !=null && checkOtp.ExpiredOtpAt<DateTime.Now)
                 {
                     checkOtp.Otp = otp;
                     checkOtp.ExpiredOtpAt = DateTime.Now.AddMinutes(5);
@@ -160,7 +160,7 @@ namespace TLS.BHL.Infra.Data.SQL.Repositories
                     var update = await Context.SaveChangesAsync(cancellationToken);
                     if (update > 0)
                     {
-                        return ResponseHelper.Updated("Thành công");
+                        return ResponseHelper.Updated("Gửi OTP thành công");
                     }
                     return ResponseHelper.Error(400, "Thất bại");
                 }

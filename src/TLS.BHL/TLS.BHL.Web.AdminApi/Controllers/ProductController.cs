@@ -30,6 +30,7 @@ namespace TLS.BHL.Web.AdminApi.Controllers
         }
 
         [HttpGet("all")]
+       
         public async Task<ApiResponse> GetAllProduct()
         {
              try
